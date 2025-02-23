@@ -24,6 +24,26 @@ Based on the work [SIM7600 MicroPython Library](https://github.com/basanovase/si
 
 # Library
 
+
+The library must be copied on the MicroPython board before using the examples.
+Please note that LIBRARIAN must also be installed.
+
+On a WiFi capable plateform:
+
+```
+>>> import mip
+>>> mip.install("github:mchobby/micropython-A7682E-modem")
+>>> mip.install("github:mchobby/esp8266-upy/LIBRARIAN")
+
+```
+
+Or via the mpremote utility :
+
+```
+mpremote mip install github:mchobby/micropython-A7682E-modem
+mpremote mip install github:mchobby/esp8266-upy/LIBRARIAN
+```
+
 # Wiring
 
 ## Wiring to Pico
@@ -31,14 +51,14 @@ Based on the work [SIM7600 MicroPython Library](https://github.com/basanovase/si
 ![SimCom A7682E to Pico Wiring](docs/_static/pico-to-SimCom-A7682E.jpg)
 
 
-# Examples
+# Testing
 
 ## fundamentals examples
-* __[test_raw.py](examples/fundamentals/test_.py)__ : very basic examples. The first used to test the communication with SIMCom module
-* __[test_initial.py](examples/fundamentals/test_.py)__ : power up the module, check if pincode is required (and enter it), wait the SIMCom to register the network.
+* __[test_initial.py](examples/fundamentals/test_.py)__ : [VERY IMPORTANT] power up the module, check if pincode is required (and enter it), wait the SIMCom to register the network.
 * __[test_control.py](examples/fundamentals/test_.py)__ : test the 'control' sub-library (get IMEI, network access, Network Scan, RSSI, SIM serial, ....)
 * __[test_notifs.py](examples/fundamentals/test_.py)__ : how to use the 'update()' call to capture the URC Unsollicitated Result Code (like SMS received, RING, ...)
 * __[test_pwroff.py](examples/fundamentals/test_.py)__ : soft shutdown/power_off the module with AT command
+* __[test_raw.py](examples/fundamentals/test_.py)__ : very basic examples. The first used to test the communication with SIMCom module
 
 ## SMS examples
 * __[test_delete_all.py](examples/sms/test_delete_all.py)__ : [VERY IMPORTANT] delete all the messages stored in the SIM and make room to received new SMS from the mobile network.
