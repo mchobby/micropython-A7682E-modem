@@ -50,6 +50,11 @@ mpremote mip install github:mchobby/esp8266-upy/LIBRARIAN
 
 ![SimCom A7682E to Pico Wiring](docs/_static/pico-to-SimCom-A7682E.jpg)
 
+# Know issue
+
+__SMS__
+
+* Send message is sensitive to concurrent URC reception (Unsolicitated Result Code). That may occasionaly raise an exception due to response parsing issue.
 
 # Testing
 
