@@ -54,7 +54,7 @@ mpremote mip install github:mchobby/esp8266-upy/LIBRARIAN
 # Testing
 
 ## fundamentals examples
-* __[test_initial.py](examples/fundamentals/test_.initial.py)__ : [VERY IMPORTANT] power up the module, check if pincode is required (and enter it), wait the SIMCom to register the network.
+* __[test_initial.py](examples/fundamentals/test_initial.py)__ : [VERY IMPORTANT] power up the module, check if pincode is required (and enter it), wait the SIMCom to register the network.
 * __[test_control.py](examples/fundamentals/test_control.py)__ : test the 'control' sub-library (get IMEI, network access, Network Scan, RSSI, SIM serial, ....)
 * __[test_notifs.py](examples/fundamentals/test_notifs.py)__ : how to use the 'update()' call to capture the URC Unsollicitated Result Code (like SMS received, RING, ...)
 * __[test_pwroff.py](examples/fundamentals/test_pwroff.py)__ : soft shutdown/power_off the module with AT command
