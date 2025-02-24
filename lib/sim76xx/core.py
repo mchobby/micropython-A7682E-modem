@@ -26,16 +26,55 @@ class Response( list ):
 	def text( self ):
 		return ' '.join(self)
 
+# CurrentCallState issued by the +GLCC: URC notification
+#  - call_id : internal id for call
+#  - dir   : direction. See constants Notifications.DIR_OUTGOING / _INCOMING
+#  - state : current state of call. See constants Notifications.CALLSTATE_ACTIVE / _HELD / ...
+#  - mode  : current call mode. See constant Notifications.MODE_VOICE/_DATA/_FAX/_UNKNOWN
+#  - mpty  : multiparty call True/False
+#  - number: phone number (a string)
+#  - ntype : format/type of phone number. See constant Notifications.NTYPE_xxx
+CallState = collections.namedtuple('CallState', ['call_id','dir','state','mode','mpty','number','ntype'])
+
+# Item stored in the notification queue
+#  - _type : type of notification. See Notifications.UNDEFINED/CURRENT_CALL/VOICE/SMS .
+#  - soure : source of the notification (= Response string)
+#  - cargo : reference to complementary information or None (EG: will contains a CallState for _type=Notifications.CURRENT_CALL)
+Notif = collections.namedtuple('Notif', ['_time','_type','source','cargo'] )
 
 class Notifications( collections.deque ):
 	""" Store the Unsolicitated Result Code (URC) """
-	# Type of notifications
+	# --- Type of notifications object -------------
 	UNDEFINED = const(0)
-	CALLER = const(1) # Notification +CLCC: with caller phone number
-	VOICE = const(2)  # RING, NO CARRIER, ... voice call notificiation
+	CURRENT_CALL = const(1) # Notification +CLCC: with caller phone number
+	VOICE = const(2)  # RING, NO CARRIER, ... old style of voice call notificiation
 	SMS = const(3)    # +CMTI: "SM",3 ... SMS mem,id notification 
 
-	NOTIF_TEXT = {UNDEFINED: "Undefined", CALLER: "CALLER", VOICE: "VOICE", SMS: "SMS"}
+	NOTIF_TEXT = {UNDEFINED: "Undefined", CURRENT_CALL: "CURRENT_CALL", VOICE: "VOICE", SMS: "SMS"}
+
+	# --- CallState constants ----------------------
+	DIR_OUTGOING = const(0)
+	DIR_INCOMING = const(0)
+
+	CALLSTATE_ACTIVE   = const(0)
+	CALLSTATE_HELD     = const(1)
+	CALLSTATE_DIALING  = const(2) # Outgoing call 
+	CALLSTATE_ALERTING = const(3) # Outgoing call
+	CALLSTATE_INCOMING = const(4)
+	CALLSTATE_WAITING  = const(5)
+	CALLSTATE_DISCONNECTED = const(6)
+
+	MODE_VOICE  = const(0)
+	MODE_DATA   = const(1)
+	MODE_FAX    = const(2)
+	MODE_UNKNOW = const(9)
+
+	NTYPE_RESTRICTED    = const(128) # Restricted number (includes unknown type and format)
+	NTYPE_INTERNATIONAL = const(145)
+	NTYPE_NATIONAL      = const(161)
+	NTYPE_SPECIFIC      = const(177) # Network specific number (eg:ISDN format)
+	NTYPE_OTHER         = const(129)
+
 
 	def __init__( self ):
 		super().__init__( [], 20 ) # Empty list with max 20 items
@@ -63,7 +102,7 @@ class Notifications( collections.deque ):
 	def append( self, s ):
 		# Add tuple  (time, notif_type, string)
 		# print( 'Notif.append', s )
-		_type = self.UNDEFINED
+		_type = self.UNDEFINED # Type of notification
 		_cargo = None
 		if s=="RING":
 			self.is_ring = True
@@ -75,12 +114,20 @@ class Notifications( collections.deque ):
 			_type = self.SMS
 			_cargo = int( s.split(",")[1] ) # SMS ID
 		elif s.startswith("+CLCC:"): # +CLCC: 1,1,4,0,0,"+33359260058",145
-			_type = self.CALLER
-			_cargo = s.split(",")[5].replace('\"','') # Phone Number
+			_type = self.CURRENT_CALL
+			_cargo = self._decode_GLCC( s )
 
 
-		super().append( (time.time(), _type, s, _cargo) )
+		super().append( Notif(time.time(), _type, s, _cargo) )
 		self._has_new = True
+
+	def _decode_GLCC( self, s ):
+		# # +CLCC: 1,1,4,0,0,"+33359260058",145
+		vals = s.split(": ")[1].split(",")
+		# call_id, dir, state, mode, mpty, number,ntype
+		return CallState( int(vals[0]), int(vals[1]), int(vals[2]), int(vals[3]), vals[4]=='1', \
+			     None if len(vals)<6 else vals[5].replace('\"',''), None if len(vals)<7 else int(vals[6]) ) 
+
 
 	@property
 	def has_new( self ):
@@ -94,7 +141,7 @@ class Notifications( collections.deque ):
 		if len(self):
 			return super().pop()
 		else:
-			return (None,None,None,None)
+			return Notif(None,None,None,None)
 
 
 class SIM76XX:

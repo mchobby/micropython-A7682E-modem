@@ -32,5 +32,8 @@ while True:
 	sim.update()
 	if sim.notifs.has_new:
 		print( "%i notifications availables" % len(sim.notifs) )
-		print( list(sim.notifs) ) # List of tuples (datetime, notif_type, message, cargo)
+		notif = sim.notifs.pop()
+		while notif._time != None:
+			print( notif ) # tuples (_time, _type, source, cargo)
+			notif = sim.notifs.pop()
 	time.sleep(1)

@@ -1,6 +1,5 @@
 # Short Message Service (SMS).
 #
-# They have been extracted from core.py to lighten the Core
 #
 import time
 import binascii
