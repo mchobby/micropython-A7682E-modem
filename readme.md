@@ -15,10 +15,10 @@ The library covers:
 * Connecting network,
 * SMS,
 * calling, 
-* phonebook, _<pending>_
-* GPRS, _<pending>_
-* FTP, _<pending>_
-* TCP/IP and HTTP _<pending>_
+* phonebook, _--pending--_
+* GPRS, _--pending--_
+* FTP, _--pending--_
+* TCP/IP and HTTP _--pending--_
 
 ## Credit 
 
