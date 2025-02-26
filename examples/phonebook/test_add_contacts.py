@@ -1,0 +1,35 @@
+# Open the Phonebook and add contacts
+#
+# See Project: https://github.com/mchobby/micropython-A7682E-modem
+#
+
+from machine import UART, Pin
+from sim76xx import *
+from sim76xx.phonebook import Phonebook
+import time
+
+# Pico 
+pwr = Pin( Pin.board.GP26, Pin.OUT, value=False )
+uart = UART( 0, tx=Pin.board.GP0, rx=Pin.board.GP1, baudrate=115200, bits=8, parity=None, stop=1, timeout=500)
+sim = SIM76XX( uart=uart, pwr_pin=pwr, uart_training=True, pincode="6778" )
+
+# Starting SIMCom module
+print( "Power up")
+sim.power_up()
+
+# Waiting for Network registration
+print( "Wait Network registration")
+while not sim.is_registered:
+	print( " waiting")
+	time.sleep(1)
+print( "registered!" )
+
+book = Phonebook( sim )
+book.open( storage=Phonebook.SIM ) # SIM is open by default
+
+print( 'Writing contact 1,2,4' )
+# Name 7 chars max, phone 40 chars max
+book.write( 1, "Dominiq", "476543211" )
+book.write( 2, "Didi", "+32333112233" )
+book.write( 4, "Marion", "+33123110011" )
+print( "Done!" )

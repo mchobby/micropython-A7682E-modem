@@ -281,3 +281,10 @@ Reading the examples is a going starting point to understand how the library wor
 * __[test_call.py](examples/voice/test_call.py)__ : Make a call  to a number, then drop it after 10 secs of talk. Do also detects when the recipient hang-up the call.
 * __[test_answer.py](examples/voice/test_answer.py)__ : Wait for incoming call, pick-up the call, wait for end-of-call (or hang-up automatically after 10 seconds).
 * __[test_reject.py](examples/voice/test_reject.py)__ : Wait for incoming call and reject the call.
+
+## Phonebook examples
+* __[test_open.py](examples/phonebook/test_open.py)__ : [VERY IMPORTANT] how to start with Phonebook (notice that SIM phonebook is automatically open).
+* __[test_add_contacts.py](examples/phonebook/test_add_contacts.py)__ : Add contact entries.
+* __[test_read_contacts.py](examples/phonebook/test_read_contacts.py)__ : get the details of a given contact identified by its index.
+* __[test_list_contacts.py](examples/phonebook/test_list_contacts.py)__ : list the contacts indexes of the selected phonebook.
+* __[test_del_contact.py](examples/phonebook/test_del_contact.py)__ : delete a contact of a selected phonebook.
