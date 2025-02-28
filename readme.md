@@ -15,7 +15,7 @@ The library covers:
 * Connecting network,
 * SMS,
 * calling, 
-* phonebook, _--pending--_
+* phonebook, 
 * GPRS, _--pending--_
 * FTP, _--pending--_
 * TCP/IP and HTTP _--pending--_

@@ -87,7 +87,7 @@ class Notifications( collections.deque ):
 
 	def is_urc( self, s ):
 		# Check if s contains an URC (Unsolicited Result Code) message
-		if s.startswith( "VOICE CALL:" ) or (s=="RING") or (s=="CONNECT") or (s=="NO CARRIER"):
+		if s.startswith( "VOICE CALL:" ) or (s=="RING") or (s=="CONNECT") or (s=="NO CARRIER") or (s=='SMS DONE'):
 			return True
 		if any( [ s.startswith(_this) for _this in ("+CLCC:","+CMTI:","+CRING:","+CIPEVENT:","+IPCLOSE:","+CLIENT:") ] ):
 			return True
@@ -135,6 +135,9 @@ class Notifications( collections.deque ):
 		_r = self._has_new
 		self._has_new = False
 		return _r
+
+	def any( self ):
+		return len( self )>0
 
 	def pop( self ):
 		# Return an entry (time,notif_type,str,cargo) # cargo main contains an information parsed from the notification
