@@ -9,5 +9,5 @@
     ["sim76xx/gprs.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/gprs.py"],
     ["sim76xx/dtmf.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/dtmf.py"]
   ],
-  "version": "0.1"
+  "version": "0.2"
 }
