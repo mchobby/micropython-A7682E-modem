@@ -16,9 +16,9 @@ The library covers:
 * SMS,
 * calling, 
 * phonebook, 
-* GPRS, _--pending--_
-* FTP, _--pending--_
+* GPRS, _--rudimentary support--_
 * TCP/IP and HTTP _--pending--_
+* FTP, _--pending--_
 
 ## Credit 
 

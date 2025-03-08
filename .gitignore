@@ -1,5 +1,6 @@
 # Tooling
 docs/push.sh
+docs.private
 pushgit.sh
 makezip.sh
 
