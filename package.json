@@ -5,7 +5,9 @@
     ["sim76xx/core.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/core.py"],
     ["sim76xx/sms.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/sms.py"],
     ["sim76xx/voice.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/voice.py"],
-    ["sim76xx/phonebook.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/phonebook.py"]
+    ["sim76xx/phonebook.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/phonebook.py"],
+    ["sim76xx/gprs.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/gprs.py"],
+    ["sim76xx/dtmf.py", "github:mchobby/micropython-A7682E-modem/lib/sim76xx/dtmf.py"]
   ],
   "version": "0.1"
 }

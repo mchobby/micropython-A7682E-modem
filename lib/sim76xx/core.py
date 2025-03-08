@@ -80,10 +80,18 @@ class Notifications( collections.deque ):
 		super().__init__( [], 20 ) # Empty list with max 20 items
 		self._has_new = False
 		self.is_ring = False
+		self._registered = [] # List of Notification plug-ins (see dtmf.py)
+
+	def register( self, plugin_obj ):
+		""" Register a notification plugin """
+		# plugin_obj must expose clear(), is_urc(), append()
+		self._registered.append( plugin_obj )
 
 	def clear(self):
 		for i in range( len(self) ):
 			self.pop()
+		for obj in self._registered:
+			obj.clear()
 
 	def is_urc( self, s ):
 		# Check if s contains an URC (Unsolicited Result Code) message
@@ -96,6 +104,8 @@ class Notifications( collections.deque ):
 		if any( [ s.startswith(_this) for _this in ("+CMQTTRXPAYLOAD:","+CMQTTRXEND:","+CCHEVENT:","+CCH_RECV_CLOSED:","+CCH_PEER_CLOSED:","+CFOTA:", "+CTVZ:" ) ] ):
 			return True
 		if any( [ s.startswith(_this) for _this in ("+CGREG:","+CGEV:","+CCWA:" ) ] ):
+			return True
+		if len(self._registered)>0 and any( [ obj.is_urc(s) for obj in self._registered ] ):
 			return True
 		return False
 
@@ -116,13 +126,22 @@ class Notifications( collections.deque ):
 		elif s.startswith("+CLCC:"): # +CLCC: 1,1,4,0,0,"+33359260058",145
 			_type = self.CURRENT_CALL
 			_cargo = self._decode_GLCC( s )
-
+		elif len(self._registered)>0: # Do we have plug-ins?
+			_managed = False
+			for obj in self._registered: 
+				if obj.is_urc(s):
+					obj.append(s)
+					_managed = True
+			# If managed by a plug-in --> stop here
+			if _managed:
+				return
 
 		super().append( Notif(time.time(), _type, s, _cargo) )
 		self._has_new = True
 
 	def _decode_GLCC( self, s ):
-		# # +CLCC: 1,1,4,0,0,"+33359260058",145
+		# Current Call information
+		# +CLCC: 1,1,4,0,0,"+33359260058",145
 		vals = s.split(": ")[1].split(",")
 		# call_id, dir, state, mode, mpty, number,ntype
 		return CallState( int(vals[0]), int(vals[1]), int(vals[2]), int(vals[3]), vals[4]=='1', \
@@ -145,6 +164,7 @@ class Notifications( collections.deque ):
 			return super().pop()
 		else:
 			return Notif(None,None,None,None)
+
 
 
 class SIM76XX:

@@ -16,6 +16,7 @@ The library covers:
 * SMS,
 * calling, 
 * phonebook, 
+* DTMF,
 * GPRS, _--rudimentary support--_
 * TCP/IP and HTTP _--pending--_
 * FTP, _--pending--_
@@ -57,6 +58,10 @@ mpremote mip install github:mchobby/esp8266-upy/LIBRARIAN
 __SMS__
 
 * Send message is sensitive to concurrent URC reception (Unsolicitated Result Code). That may occasionaly raise an exception due to response parsing issue.
+
+__DTMF__
+
+* When caller send DTMF, it is sometime received multiples time by the SimCOM module. User code must filter duplicates.
 
 # Connecting the mobile Network
 
@@ -282,9 +287,15 @@ Reading the examples is a going starting point to understand how the library wor
 * __[test_answer.py](examples/voice/test_answer.py)__ : Wait for incoming call, pick-up the call, wait for end-of-call (or hang-up automatically after 10 seconds).
 * __[test_reject.py](examples/voice/test_reject.py)__ : Wait for incoming call and reject the call.
 
+## DTMF - Dual-Tone Multi-Frequency
+* __[test_dtmf.py](examples/dtmf/test_dtmf.py)__ : Wait phone call, pick-up the phone for 20 sec. Capture DTMF and show it on REPL. Script also sent DTMF on conditions.
+
 ## Phonebook examples
 * __[test_open.py](examples/phonebook/test_open.py)__ : [VERY IMPORTANT] how to start with Phonebook (notice that SIM phonebook is automatically open).
 * __[test_add_contacts.py](examples/phonebook/test_add_contacts.py)__ : Add contact entries.
 * __[test_read_contacts.py](examples/phonebook/test_read_contacts.py)__ : get the details of a given contact identified by its index.
 * __[test_list_contacts.py](examples/phonebook/test_list_contacts.py)__ : list the contacts indexes of the selected phonebook.
 * __[test_del_contact.py](examples/phonebook/test_del_contact.py)__ : delete a contact of a selected phonebook.
+
+## GPRS
+* __[test_connect.py](examples/gprs/test_connect.py)__ : Establish a GPRS connection and returns IP Address. You must known the APN configuration of your provider (Not tested further than connecting/disconnecting because of documentation lack).
