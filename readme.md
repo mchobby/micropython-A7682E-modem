@@ -18,8 +18,9 @@ The library covers:
 * phonebook, 
 * DTMF,
 * GPRS, _--rudimentary support--_
-* TCP/IP and HTTP _--pending--_
+* HTTP and HTTPs, _--rudimentary support--_ (see [readme_http.md](readme_http.md))
 * FTP, _--pending--_
+* MQTT _--pending--_
 
 ## Credit 
 
@@ -63,7 +64,11 @@ __DTMF__
 
 * When caller send DTMF, it is sometime received multiples time by the SimCOM module. User code must filter duplicates.
 
-# Connecting the mobile Network
+__HTTP__
+
+* Error occuring while making HTTP request will requires a A7682 power cycle to recover from error state. "AT+HTTPINIT : ERROR" will occurs on subsequent attempt because HTTPINIT is not reentrant. HTTPTERM (terminate) will fails in HTTP error situation. GPRS connection closure will also fails!
+* HTTPS connexion currently results in "HTTP Error 715 : Handshake failed" for undetermined reason (for url https://www.mchobby.be/test.txt).
+* HTTPS connexion currently results in "HTTP Error 706 : Receive/send socket data failed" for undetedmined reason (for url https://github.com/lxi-tools/lxi-tools).
 
 The most critical part of any mobile project is to be able to __establish a stable connection with the Mobile Network__.
 
@@ -264,6 +269,9 @@ NTYPE_OTHER         = const(129)
 # Testing
 Reading the examples is a going starting point to understand how the library works.
 
+Note:
+* sub-modules can register himself in the URC notification loop (see [http.py](lib/sim76xx/http.py) sub-module for example).
+
 ## fundamentals examples
 
 * __[test_initial.py](examples/fundamentals/test_initial.py)__ : [VERY IMPORTANT] power up the module, check if pincode is required (and enter it), wait the SIMCom to register the network.
@@ -297,5 +305,11 @@ Reading the examples is a going starting point to understand how the library wor
 * __[test_list_contacts.py](examples/phonebook/test_list_contacts.py)__ : list the contacts indexes of the selected phonebook.
 * __[test_del_contact.py](examples/phonebook/test_del_contact.py)__ : delete a contact of a selected phonebook.
 
-## GPRS
+## GPRS example
 * __[test_connect.py](examples/gprs/test_connect.py)__ : Establish a GPRS connection and returns IP Address. You must known the APN configuration of your provider (Not tested further than connecting/disconnecting because of documentation lack).
+
+## HTTP examples
+* __[test_get_http.py](examples/http/test_get_http.py)__ : Get the content of a file stored on an HTTP server.
+* __[test_get_http_02.py](examples/http/test_get_http_02.py)__ : Get the webpage from a WebServer.
+* __[test_get_https.py](examples/http/test_get_https.py)__ : (defective) try to make a GET over an HTTPS connexion.
+* __[test_get_https_02.py](examples/http/test_get_https_02.py)__ : (defective) try to make a GET the page from a WebServer over an HTTPS connexion.

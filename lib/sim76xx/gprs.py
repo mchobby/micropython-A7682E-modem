@@ -1,3 +1,6 @@
+import time
+from .core import debug, Timeout
+
 class GPRS:
     def __init__(self, sim):
         self.sim = sim
@@ -24,12 +27,34 @@ class GPRS:
 
         # Will return '+CGPADDR: 1,10.190.7.165'
         _r = self.sim.send_command('AT+CGPADDR=1' ) # cid
-        return _r[0].split(': ')[1].split(',')[1] # Ignore the cid
+        for line in _r:
+            if line.startswith( '+CGPADDR:' ):
+                return line.split(',')[1] # Ignore the cid
+        return '?.?.?.?'
 
     def write(self, data):
         # will send a buffer
+        debug( '--(GPRS)--> %s' % data )
         self.sim.uart.write(data)
 
-    def read(self):
+    def read(self , len=None):
         # Will return a buffer
-        return self.sim.uart.read()
+        if len==None:
+            _d = self.sim.uart.read()
+        else:
+            _d = self.sim.uart.read( len )
+        debug( '<--(GPRS)-- %s' % _d )
+        return _d
+
+    def readline(self, timeout=3000):
+        # Read a line until timeout
+        start_time = time.ticks_ms()
+        while time.ticks_diff(time.ticks_ms(), start_time) < timeout:
+            s = self.sim.uart.readline()
+            debug( '<==(GPRS)== %s' % s )
+            if s==None:
+                continue # Next round until time out
+            s = s.decode('ASCII').replace('\r','').replace('\n','')
+            return s 
+
+        raise Timeout( 'GPRS.readline()', timeout )
