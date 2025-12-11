@@ -317,6 +317,19 @@ class SIM76XX:
 		_r = self.send_command('AT+CREG?').text
 		if not( '+CREG:' in _r): #eg: +CREG: 0,1
 			return False
+		# +CREG may come in a midlle of URCs !
+		# Imrove parsing
+		idx = _r.find('+CREG:')
+		if idx>=0: # remove content in front
+			_r = _r[idx:]
+		# Check the "," position then if another messages follows the coma parameter
+		idx = _r.find(",")
+		if idx<0:
+			return False
+		idx2 = _r.find(" ",idx) #Space after coma?
+		if idx2 > 0:
+			_r = _r[:idx2] # keep only the "+CREG: 0,1" part
+
 
 		stat = int( _r.split(',')[1] )
 		if stat == 3:
