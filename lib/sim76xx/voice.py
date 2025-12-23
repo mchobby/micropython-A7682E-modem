@@ -22,7 +22,7 @@ class CallStatus:
         self.direction = int( values[1] ) # DIR_OUT, DIR_IN
         self.state = int( values[2] ) # STATE_xxx
         self.mode  = int( values[3] ) # 0=voice, 1=data, 2=fax, 9=unknown
-        self.multiparty = True if value[4]=="1" else False
+        self.multiparty = True if values[4]=="1" else False
         if len(values)>=6:
             self.phone = values[5]  # Phone Number
             # 128=restricted number type, 145=international number, 
@@ -59,7 +59,7 @@ class Voice:
         for line in self.sim.send_command('AT+CLCC'):
             print( line )
             if line.startswith("+CLCC:"):
-                _r.append( CallStatus( line[6:].trim() ))
+                _r.append( CallStatus( line[6:].strip() ))
         return _r
 
 
