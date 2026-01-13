@@ -196,6 +196,7 @@ class SIM76XX:
 			if s==eor: # end of response 'OK':
 				return response # OK received
 			if 'ERROR' in s:
+				# Other Error
 				raise CommandError( command, s )
 			if self.notifs.is_urc( s ):
 				self.notifs.append( s )
@@ -207,10 +208,21 @@ class SIM76XX:
 
 
 	def send_command(self, command, timeout=30000, filter=None, max_row=None):
-		debug( '--> %s' % command )
-		self.uart.write(command.encode('ASCII'))
-		self.uart.write( bytes([13,10]) )
-		return self.read_response( command, timeout, filter, max_row )
+		while True:
+			debug( '--> %s' % command )
+			self.uart.write(command.encode('ASCII'))
+			self.uart.write( bytes([13,10]) )
+			try:
+				_r = self.read_response( command, timeout, filter, max_row )
+			except CommandError as err:
+				if 'SIM busy' in str(err): # If the SIM is busy then we should wait a bit more
+					time.sleep_ms(500)
+					continue
+				else:
+					# send it
+					raise
+			return _r
+
 
 
 	def update( self ):
